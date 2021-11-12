@@ -1,3 +1,6 @@
+// collision constants
+const MAX_COLLISION_LOOPS = 16;
+
 /*
 These are classes I hope to be able to reuse in future games.
 */
