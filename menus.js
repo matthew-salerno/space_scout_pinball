@@ -1,3 +1,4 @@
+var BALL_IMG;
 class logo extends entity_2d {
 	constructor(parent, posistion, direction, animate = false) {
 		super(parent, posistion, direction);
@@ -232,7 +233,6 @@ class instructions_world extends world {
 	constructor() {
 		super();
 		this.drawAbove = new Set();
-		//this.ballimg = loadImage("assets/ball.png");
 	}
 	draw() {
 		let subpixel_scale = pixelDensity();
@@ -262,21 +262,19 @@ class instructions_world extends world {
 		fill('black');
 		text("\
 		Welcome Space Scout Pinball, now in 2D!!\n\
-		Use the <NA> and <NA> keys to flip the paddles.\n\
+		Use the A and D keys to flip the paddles.\n\
 		You will have three balls for each game. \n\
-		Use the <NA> key to send them into the machine.\n\
 		Hit as many targets as possible to increase your score.\n\
 		If the a ball falls off the screen, or into a black hole, it's game over!\n\
 		Watch out for some strange physics you'll only see in space.\
 		\n\n\
 		NOTE:\n\
-		Sprites are a work in progress\n\
-		More and better characters will be added in with levels\n\
-		which will be drawn with backgrounds\
+		Detailing in the level still needed\n\
+		Physics mostly work, but need some fine tuning for fun\n\
+		Sounds are missing\
 		\n\n\
 		DEBUG:\n\
-		Press H to view hitboxes\n\
-		Press M to view the position hash array\
+		Press H to view (some) hitboxes\n\
 		\n\n\
 		Have fun,\n\
 		-Matthew J. Salerno\
@@ -286,7 +284,7 @@ class instructions_world extends world {
 
 		// draw ball
 		translate(800, 500);
-		image(this.ballimg, -10,-10, 20,20);
+		image(BALL_IMG, -10,-10, 20,20);
 		// draw paddle
 		translate(-50, 350);
 		rotate(-QUARTER_PI/2);

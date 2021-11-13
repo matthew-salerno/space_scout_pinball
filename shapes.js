@@ -140,6 +140,16 @@ class convex_shape {
 		return true;
 	}
 	
+	intersect_circle(vec, radius) {
+		let allInside = true;
+		for (let pln of this.normals) {
+			if (pln.dist(vec) > radius) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	// returns 0 for intersection, otherwise returns distance closest to plane
 	crosses_plane(pln) {
 	  let sign = null;
@@ -184,11 +194,11 @@ class convex_shape {
 		return closest;
 	}
 	
-	get_closest_plane(vec) {
+	get_closest_plane(vec, offset=0) {
 		let min = Infinity;
 		let closest = null;
 		for (let pln of this.normals) {
-			let newDist = abs(pln.dist(vec));
+			let newDist = abs(pln.dist(vec)-offset);
 			if (newDist < min) {
 				min=newDist;
 			closest = pln;
@@ -209,6 +219,7 @@ class convex_shape {
 		}
 		return closest;
 	}
+	
 	
 	draw() {
 		beginShape();

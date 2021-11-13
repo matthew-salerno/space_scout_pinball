@@ -49,6 +49,9 @@ class logoPart extends particle_2d {
 /*
 This is the part that loads the world and starts the game.
 */
+function preload() {
+	BALL_IMG = loadImage("assets/ball.png");
+}
 
 function setup() {
 	CANVAS = createCanvas(1000, 1000);
@@ -68,7 +71,4 @@ function setup() {
 function draw() {
 	WORLD.process();
 	WORLD.draw();
-	textAlign(LEFT);
-	textSize(30);
-	text(str(round(frameRate())), 30, 30);
 }

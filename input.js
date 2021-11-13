@@ -16,6 +16,8 @@ var DIR_INPUT = [0,0]; // Directional keys being pressed. Opposite keys add to z
 var PREFERRED_AXIS = 0 // In case of no diagonal movement in game, we favor the most recent key press
 var MOUSE_WAS_PRESSED = false; // we don't want if the mouse is pressed, just if it was since the last time this var was cleared.
 var SPACE_WAS_PRESSED = false; // same as above
+var A_PRESSED=false;
+var D_PRESSED=false;
 function mousePressed() {
 	MOUSE_WAS_PRESSED = true;
 }
