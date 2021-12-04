@@ -154,20 +154,14 @@ class level_3_world extends world {
 		super.process();
 		if (!this.ball_gone) {
 			let cent_accel = (TWO_PI/this.rotation_period)**2*this.ball.position.dist(createVector(500,500));
-			// v=rw
-			let v_old = (1/this.rotation_period)*this.ball.position.dist(createVector(500,500));
-			let v_new = (1/this.rotation_period)*this.ball.position.copy(this.ball.velocity).add().dist(createVector(500,500));
-			let cor_accel = v_old-v_old;
 
-			
 			this.ball.velocity.add()
 			if (this.ball.position.copy().sub(createVector(500,500)).magSq() > 500**2) {
 				this.ball_gone = true;
 				this.lives--;
 			}
-			
-			this.ball.velocity.add(this.ball.position.copy().sub(createVector(500,500)).normalize().rotate(-HALF_PI).mult(cor_accel));
 			this.ball.velocity.add(this.ball.position.copy().sub(createVector(500,500)).normalize().mult(cent_accel));
+			this.ball.velocity.rotate(TWO_PI/this.rotation_period);
 		}
 		else if (MOUSE_WAS_PRESSED && this.lives > 0) {
 			this.ball.position = this.ball.spawn.copy();
