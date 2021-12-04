@@ -213,15 +213,12 @@ class menu_world extends world {
 	}
 	setup() {
 		new emitter(this, starfield_part, createVector(0), 0, 300, 300, 5,1,10, false, createVector(500,500));
-		let men1 = new menu_item(this, createVector(500,300), 0, 300, 100, "PLAY", function() {W_LEVEL_1.setup(); WORLD=W_LEVEL_1;});
+		let men1 = new menu_item(this, createVector(500,300), 0, 300, 100, "PLAY", function() {WORLD=W_LEVEL_SEL;});
 		let men2 = new menu_item(this, createVector(500,500), 0, 300, 100, "INSTRUCTIONS", function() {WORLD=W_INSTRUCTIONS});
-		let men3 = new menu_item(this, createVector(500,700), 0, 300, 100, "SETTINGS", function() {WORLD=W_SETTINGS;});
 		this.drawAbove.add(men1);
 		this.drawAbove.add(men2);
-		this.drawAbove.add(men3);
 		this.drawCalls.delete(men1);
 		this.drawCalls.delete(men2);
-		this.drawCalls.delete(men3);
 	}
 	process(){
 		super.process();
@@ -264,14 +261,15 @@ class instructions_world extends world {
 		Welcome Space Scout Pinball, now in 2D!!\n\
 		Use the A and D keys to flip the paddles.\n\
 		You will have three balls for each game. \n\
-		Hit as many targets as possible to increase your score.\n\
+		Hit as many bumpers as possible to increase your score.\n\
 		If the a ball falls off the screen, or into a black hole, it's game over!\n\
 		Watch out for some strange physics you'll only see in space.\
 		\n\n\
-		NOTE:\n\
-		Detailing in the level still needed\n\
-		Physics mostly work, but need some fine tuning for fun\n\
-		Sounds are missing\
+		NOTES:\n\
+		All sound, textures, and code included is my own. \n\
+		On the spaceship level, hit the green block to turn off the engines. \n\
+		Remember that the coriolis effect is accounted for on the space station level. \n\
+		Going off screen on the black hole level does not cost a life. \n\
 		\n\n\
 		DEBUG:\n\
 		Press H to view (some) hitboxes\n\
@@ -282,47 +280,30 @@ class instructions_world extends world {
 		text("A game by Matthew Salerno", 20, 980);
 		fill('darkGrey');
 
-		// draw ball
-		translate(800, 500);
-		image(BALL_IMG, -10,-10, 20,20);
-		// draw paddle
-		translate(-50, 350);
-		rotate(-QUARTER_PI/2);
-		stroke('purple');
-		fill('darkBlue');
-		strokeWeight(5);
-		circle(-75, 0, 30);
-		circle(75,0, 50);
-		noStroke();
-		quad(-75, 15, -75, -15, 75,-25, 75,25);
-		stroke('purple');
-		line(-75,  15, 75, 25);
-		line(-75, -15, 75,-25);
-		rotate(QUARTER_PI/2);
-		translate(-500, 0);
-		rotate(QUARTER_PI/2-PI);
-		circle(-75, 0, 30);
-		circle(75,0, 50);
-		noStroke();
-		quad(-75, 15, -75, -15, 75,-25, 75,25);
-		stroke('purple');
-		line(-75,  15, 75, 25);
-		line(-75, -15, 75,-25);
-		resetMatrix();
-		
 	}
 	setup() {
 		let men = new menu_item(this, createVector(500,800), 0, 300, 100, "BACK", function() {WORLD=W_MENU;});
 		this.drawAbove.add(men);
 		this.drawCalls.delete(men);
+		this.ball = new ball(this, createVector(300,700), 0);
+		this.walls = {collisions: []};
+		this.lpaddle = new paddle(this, createVector(250, 770), PI/180*30, false, KEY_A);
+		this.rpaddle = new paddle(this, createVector(750, 770), PI/180*150, true, KEY_D);
+		this.world.paddles = [this.lpaddle, this.rpaddle];
+		this.world.bumpers = [new bumper(this, createVector(500, 800),0,new convex_shape(zip_array_to_vecs([-150,-50, 0,-60, 150,-50, 150,50, -150, 50])), color(0,0,0,0), color(0,0,0,0))];
 	}
 	process(){
 		super.process();
+		this.ball.velocity.y+=0.1
+		if (this.ball.position.y > 1020) {
+			this.ball.position = random([createVector(300,700), createVector(700,700)]);
+			this.ball.velocity = createVector(0,0);
+		}
 		MOUSE_WAS_PRESSED = false;
 	}
 }
 
-class settings_world extends world {
+class select_world extends world {
 	constructor() {
 		super();
 		this.drawAbove = new Set();
@@ -350,30 +331,18 @@ class settings_world extends world {
 		translate(-550,225);
 	}
 	setup() {
-		let men1 = new menu_item(this, createVector(400,300), 0, 300, 100, "VOLUME", function() {});
-		let men2 = new menu_item(this, createVector(620,300), 0, 100, 100, "+", function() {});
-		let men3 = new menu_item(this, createVector(180,300), 0, 100, 100, "-", function() {});
-		let men4 = new menu_item(this, createVector(340,450), 0, 420, 100, "LEFT PADDLE", function() {});
-		let men5 = new menu_item(this, createVector(620,450), 0, 100, 100, "NA", function() {});
-		let men6 = new menu_item(this, createVector(340,600), 0, 420, 100, "RIGHT PADDLE", function() {});
-		let men7 = new menu_item(this, createVector(620,600), 0, 100, 100, "NA", function() {});
-		let men8 = new menu_item(this, createVector(400,750), 0, 540, 100, "BACK", function() {WORLD=W_MENU;});
+		let men1 = new menu_item(this, createVector(400,300), 0, 540, 100, "LEVEL 1\nThe Elevator Experiment", function() {W_LEVEL_1.setup(); WORLD=W_LEVEL_1;});
+		let men2 = new menu_item(this, createVector(400,500), 0, 540, 100, "LEVEL 2\nThe Trash Compactor", function() {W_LEVEL_2.setup(); WORLD=W_LEVEL_2;});
+		let men3 = new menu_item(this, createVector(400,700), 0, 540, 100, "LEVEL 3\nMotion Sickness", function() {W_LEVEL_3.setup(); WORLD=W_LEVEL_3;});
+		let men4 = new menu_item(this, createVector(400,900), 0, 540, 100, "BACK", function() {WORLD=W_MENU;});
 		this.drawAbove.add(men1);
 		this.drawAbove.add(men2);
 		this.drawAbove.add(men3);
 		this.drawAbove.add(men4);
-		this.drawAbove.add(men5);
-		this.drawAbove.add(men6);
-		this.drawAbove.add(men7);
-		this.drawAbove.add(men8);
 		this.drawCalls.delete(men1);
 		this.drawCalls.delete(men2);
 		this.drawCalls.delete(men3);
 		this.drawCalls.delete(men4);
-		this.drawCalls.delete(men5);
-		this.drawCalls.delete(men6);
-		this.drawCalls.delete(men7);
-		this.drawCalls.delete(men8);
 	}
 	process(){
 		super.process();

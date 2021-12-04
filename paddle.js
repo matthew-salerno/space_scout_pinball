@@ -17,6 +17,10 @@ class paddle extends entity_2d {
 	}
 	__process() {
 		if (keyIsDown(this.key) && this.state==false) {
+			if (!SOUND_PADDLE_UP.played) {
+				SOUND_PADDLE_UP.played = true;
+				SOUND_PADDLE_UP.play();
+			}
 			this.direction = this.upAngleVec.heading();
 			let ball_rel = this.world.ball.position.copy().sub(this.position);
 			let upNorm = this.upAngleVec.copy().normalize().rotate(HALF_PI*(2*this.clockwise-1));
@@ -32,6 +36,10 @@ class paddle extends entity_2d {
 		else if (!keyIsDown(this.key) && this.state==true) {
 			this.direction = this.downAngleVec.heading();
 			this.state = false;
+			if (!SOUND_PADDLE_DOWN.played) {
+				SOUND_PADDLE_DOWN.played = true;
+				SOUND_PADDLE_DOWN.play();
+			}
 		}
 		this.shape.rotation=this.direction;
 	}

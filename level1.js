@@ -142,6 +142,7 @@ class level_1_world extends world {
 		rect(980,20,20,960);
 		textSize(40);
 		textAlign(LEFT);
+		stroke('white')
 		text("Score:", 550,60);
 		text(str(this.score),700,60);
 		text("Lives:", 550,120);
@@ -150,19 +151,32 @@ class level_1_world extends world {
 			textAlign(CENTER);
 			text("GAME OVER\n Click to continue", 750,500);
 		}
+		else if (this.ball_gone) {
+			textAlign(CENTER);
+			text("Click to spawn ball", 750,500);
+		}
 		noStroke();
 		fill(70);
 		triangle(120,420, 80, 420, 120, 160);
 		triangle(540,420, 580, 420, 540, 160);
 		triangle(120,820, 40, 820, 120, 560);
 		triangle(540,820, 620, 820, 540, 560);
+		if (this.moving) {
+			fill('green');
+		}
+		else {
+			fill('red');
+		}
+		rect(300, 20, 60, 10);
 	}
 	setup() {
+		this.ball_gone = true;
 		this.drawAbove = new Set();
 		this.lives=3;
 		this.score=0;
 		this.walls = new ship_walls(this, createVector(0,0), 0);
 		this.ball = new ball(this, createVector(330,70), 0);
+		this.ball.position = createVector(2000,2000);
 		this.lpaddle = new paddle(this, createVector(250, 770), PI/180*30, false, KEY_A);
 		this.rpaddle = new paddle(this, createVector(410, 770), PI/180*150, true, KEY_D);
 		this.rengine = new ship_engine(this, createVector(500, 820), 0);
@@ -203,8 +217,32 @@ class level_1_world extends world {
 			return;
 		}
 		super.process();
-		if (this.moving) {
-			this.ball.velocity.y += 0.1;
+		if (!this.ball_gone) {
+			if (this.moving) {
+				this.ball.velocity.y += 0.1;
+			}
+			if (this.ball.position.y > 1020) {
+				this.ball_gone = true;
+				this.lives--;
+			}
+			if (this.ball.position.y < 10) {
+				this.ball.position.y=20;
+				this.ball.velocity.y*=-1;
+				this.moving = false;
+				this.timer = 300;
+			}
+			if (this.timer == 0) {
+				this.moving = true;
+			}
+			else {
+				this.timer--;
+			}
+		}
+		else if (MOUSE_WAS_PRESSED && this.lives > 0) {
+			this.ball.position = this.ball.spawn.copy();
+			this.ball.position.add(p5.Vector.fromAngle(random(0,TWO_PI), 10));
+			this.ball.velocity = createVector(0,0);
+			this.ball_gone = false;
 		}
 		MOUSE_WAS_PRESSED=false;
 	}

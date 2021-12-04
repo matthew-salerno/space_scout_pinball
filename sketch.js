@@ -22,9 +22,11 @@ var CANVAS;
 // worlds that we want to keep as globals for switching
 var W_LOGO;
 var W_MENU;
-var W_SETTINGS;
+var W_LEVEL_SEL;
 var W_INSTRUCTIONS;
 var W_LEVEL_1;
+var W_LEVEL_2;
+var W_LEVEL_3;
 
 // debug
 var VISUALIZE_COLLISIONS  = false;
@@ -49,8 +51,17 @@ class logoPart extends particle_2d {
 /*
 This is the part that loads the world and starts the game.
 */
+var SOUND_PADDLE_UP;
+var SOUND_PADDLE_DOWN;
+var SOUND_BALL;
 function preload() {
 	BALL_IMG = loadImage("assets/ball.png");
+	soundFormats('ogg');
+	SOUND_PADDLE_UP = loadSound('assets/paddle1.ogg');
+	SOUND_PADDLE_DOWN = loadSound('assets/paddle2.ogg');
+	SOUND_BALL = loadSound('assets/ball.ogg');
+	SOUND_PADDLE_UP.played = false;
+	SOUND_PADDLE_DOWN.played = false;
 }
 
 function setup() {
@@ -58,17 +69,21 @@ function setup() {
 	frameRate(60);
 	W_LOGO = new logo_world();
 	W_MENU = new menu_world();
-	W_SETTINGS = new settings_world();
+	W_LEVEL_SEL = new select_world();
 	W_INSTRUCTIONS = new instructions_world();
 	W_LEVEL_1 = new level_1_world();
+	W_LEVEL_2 = new level_2_world();
+	W_LEVEL_3 = new level_3_world();
 	WORLD=W_LOGO;
 	WORLD.setup();
 	W_MENU.setup();
-	W_SETTINGS.setup();
+	W_LEVEL_SEL.setup();
 	W_INSTRUCTIONS.setup();
 }
 
 function draw() {
 	WORLD.process();
 	WORLD.draw();
+	SOUND_PADDLE_UP.played = false;
+	SOUND_PADDLE_DOWN.played = false;
 }

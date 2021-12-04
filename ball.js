@@ -3,7 +3,7 @@ class ball extends entity_2d {
 		super(parent, position, direction);
 		this.spawn = position.copy();
 		this.velocity = createVector(0,0);
-		this.friction = 0.98;
+		this.friction = 0.99;
 		this.bounce = 0.90;
 	}
 	__process() {
@@ -36,24 +36,18 @@ class ball extends entity_2d {
 				if (pln === null) {
 					continue;
 				}
+				SOUND_BALL.play();
 				this.position.add(pln.normal.copy().mult(abs(pln.dist(this.position)-10)));
 				this.velocity.reflect(pln.normal);
 				this.velocity.add(this.velocity.copy().normalize().mult(5));
 				this.world.score+=5;
 			}
 		}
-		if (this.position.y > 1020) {
-			this.position = this.spawn.copy();
-			this.world.lives--;
-		}
 		this.velocity.mult(this.friction);
 	}
 	__draw() {
 		translate(this.position.x, this.position.y);
-		noStroke();
-		fill(90);
-		circle(0,0,20);
-		image(BALL_IMG, -7, -7, 14, 14);
+		image(BALL_IMG, -10, -10, 20, 20);
 		translate(-this.position.x, -this.position.y);
 	}
 }
